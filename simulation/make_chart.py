@@ -12,6 +12,7 @@ import numpy as np
 from run_numpy_validation import pert_standard, run_regime, plt
 import matplotlib
 from run_validation import PARAMETERS, SEED, N, pert_mean, analytic_expected_mean, make_sensitivity_cases
+from turnover_sensitivity import generate as generate_turnover_sensitivity
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.colors import TwoSlopeNorm
 from matplotlib.lines import Line2D
@@ -182,26 +183,28 @@ def generate(language, labels, fonts, readme):
             ax.set(xlabel=t['freq'],ylabel=t['sev'],xlim=(0,27),ylim=(0,7.7))
             ax.legend(handles=[Line2D([0],[0],marker='o',linestyle='',color=COL[r],label=t['names'][i]) for i,r in enumerate(REG)],loc='upper right',frameon=False)
             save(fig,4,lang,pdf)
+            generate_turnover_sensitivity(OUT, pdf)
 
     draw(language)
     manifest={'n':N,'seed_per_regime':{r:SEED+ord(r) for r in REG},'input_parameters':PARAMETERS,
               'environment':{'python':platform.python_version(),'numpy':np.__version__,'matplotlib':matplotlib.__version__},
               'methods':{'figures_1_4_5':'Analytical expectation, independent standard Beta-PERT inputs',
-                         'figures_2_3':'Monte Carlo, existing corrected NumPy simulator'},
+                         'figures_2_3':'Monte Carlo, existing corrected NumPy simulator',
+                         'turnover_sensitivity':'Illustrative analytical first-year scenario; replaces B turnover cost while C stays at baseline'},
               'heatmap':{'scope':'Only B S2 success triples and people triples are multiplied; all other inputs fixed',
                          'comparison':'Expected annual total cost only; not P95 or probability B beats C',
                          'b_s2_multiplier_at_equal_cost_with_people_unchanged':threshold_x,
                          'b_people_multiplier_at_equal_cost_with_s2_halved':threshold_y,
                          'joint_half_b_mean_usd':joint*1e6,'c_baseline_mean_usd':cmean*1e6},
               'source_sha256':{name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest()
-                               for name in ['run_validation.py', 'run_numpy_validation.py', 'make_chart.py', 'pyproject.toml', 'uv.lock', 'README.md']}}
+                               for name in ['run_validation.py', 'run_numpy_validation.py', 'make_chart.py', 'turnover_sensitivity.py', 'pyproject.toml', 'uv.lock', 'README.md']}}
     (OUT/'methods_and_inputs.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
     (OUT/'README.txt').write_text(readme, encoding='utf-8')
     print(json.dumps(manifest['heatmap'],indent=2))
     with zipfile.ZipFile(OUT/'project_charts_bundle.zip','w',zipfile.ZIP_DEFLATED) as z:
         for p in sorted(OUT.iterdir()):
             if p.is_file() and p.suffix!='.zip': z.write(p,p.name)
-        for name in ['run_validation.py', 'run_numpy_validation.py', 'make_chart.py', 'pyproject.toml', 'uv.lock', 'README.md']:
+        for name in ['run_validation.py', 'run_numpy_validation.py', 'make_chart.py', 'turnover_sensitivity.py', 'pyproject.toml', 'uv.lock', 'README.md']:
             z.write(Path(__file__).parent/name,'scripts/'+name)
     print('Saved single-language PNG/SVG figures, PDFs, review CSVs, manifest, and ZIP to',OUT)
 
@@ -224,7 +227,7 @@ TEXT = {'names': ['A  No additional program', 'B  Maximum surveillance', 'C  Pri
  'parts': ['S1  USB theft',
            'S2  Email/cloud theft',
            'S3  Admin sabotage',
-           'Employee impacts',
+           'Turnover cost',
            'Program',
            'Expected fines'],
  'cases': ['Baseline',
@@ -250,12 +253,11 @@ TEXT = {'names': ['A  No additional program', 'B  Maximum surveillance', 'C  Pri
               'fine.',
  'risknote': 'P95 marks the cost exceeded in about 5% of modeled years; it is not a confidence '
              'interval.',
- 'sensnote': 'All three individual tests retain C < B < A for both mean and P95. Combined changes '
-             'are shown in Figure 4.'}
+ 'sensnote': 'Individual changes to B; combined changes are shown in Figure 4.'}
 
 
 def main():
-    generate('en', TEXT, ['DejaVu Sans'], 'CRM project charts (en)\nFive figures: composition, exceedance, individual sensitivities, B/C break-even,\nand event frequency versus severity. Currency: USD millions.\nFigures 1, 4, 5 use analytical means; 2, 3 use 20,000 simulated years.\nFigure 4 compares means only, not P95. All other inputs remain fixed.\nRun from the project root: cd simulation && uv run --frozen python make_chart.py\nRun from the extracted bundle: cd scripts && uv run --frozen python make_chart.py\nRequires NumPy and Matplotlib. Font: DejaVu Sans.\n')
+    generate('en', TEXT, ['DejaVu Sans'], 'CRM project charts (en)\nSix figures: composition, exceedance, individual sensitivities, B/C break-even,\nevent frequency and severity, and illustrative turnover sensitivity. Currency: USD millions.\nFigures 1, 4, 5 and turnover sensitivity use analytical means; 2, 3 use 20,000 simulated years.\nEmployee costs represent illustrative turnover only; triage and morale costs are excluded.\nThe turnover scenario varies B while C stays at baseline.\nIntention gaps are assumptions, not proven effects; conversion and hiring costs are assumptions.\nFigure 4 and turnover sensitivity compare means only, not P95.\nRun from the project root: cd simulation && uv run --frozen python make_chart.py\nRun from the extracted bundle: cd scripts && uv run --frozen python make_chart.py\nRequires NumPy and Matplotlib. Font: DejaVu Sans.\n')
 
 
 if __name__ == "__main__":
