@@ -1,6 +1,6 @@
 # Reproduce the simulation figures
 
-This folder generates five baseline English figures and an illustrative turnover sensitivity chart comparing three insider-threat monitoring regimes at BNY scale. Baseline inputs are defined in `run_validation.py` and turnover scenario assumptions in `turnover_sensitivity.py`; no external dataset or PDF is needed to run the code.
+This folder generates seven English figures comparing three insider-threat monitoring regimes at BNY scale. Baseline inputs are defined in `run_validation.py` and turnover scenario assumptions in `turnover_sensitivity.py`; no external dataset or PDF is needed to run the code.
 
 ## Files to commit
 
@@ -31,8 +31,8 @@ The first run needs network access to install dependencies. Matplotlib uses a no
 
 Results are written to `output/project_charts/en/`. Running again overwrites files with the same names.
 
-- Six PNG and six SVG figures: cost composition, cost exceedance, individual sensitivities, B/C break-even, event frequency versus severity, and turnover sensitivity.
-- `project_figures_en.pdf`: all six figures in one PDF.
+- Seven PNG and seven SVG figures: cost composition, cost exceedance, individual sensitivities, B/C break-even, event frequency versus severity, grouped cost comparison, and turnover sensitivity.
+- `project_figures_en.pdf`: all seven figures in one PDF.
 - CSV files: cost components, annual samples, sensitivity results, event severity, and the break-even grid.
 - `methods_and_inputs.json`: parameters, seeds, software versions, and source hashes.
 - `project_charts_bundle.zip`: figures, review data, and reproduction files under `scripts/`.

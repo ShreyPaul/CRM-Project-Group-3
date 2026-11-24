@@ -183,6 +183,26 @@ def generate(language, labels, fonts, readme):
             ax.set(xlabel=t['freq'],ylabel=t['sev'],xlim=(0,27),ylim=(0,7.7))
             ax.legend(handles=[Line2D([0],[0],marker='o',linestyle='',color=COL[r],label=t['names'][i]) for i,r in enumerate(REG)],loc='upper right',frameon=False)
             save(fig,4,lang,pdf)
+            fig = plt.figure(figsize=(14, 7.5), facecolor='white')
+            fig.text(.06, .94, '06  Cost comparison by regime', fontsize=23, weight='bold')
+            fig.text(.06, .89, 'Expected annual costs by component and total', fontsize=11.5, color='#596C7B')
+            ax = fig.add_axes([.07, .23, .63, .58]); style(ax)
+            keys = ('S1', 'S2', 'S3', 'people', 'program', 'fines')
+            positions = np.arange(len(keys)); width = .25
+            for i, r in enumerate(REG):
+                ax.bar(positions+(i-1)*width, [COMP[r][k] for k in keys], width, color=COL[r], label=r)
+            ax.set_xticks(positions, ['USB\ntheft', 'Email/cloud\ntheft', 'Admin\nsabotage', 'Additional\nturnover', 'Program', 'Expected\nfines'])
+            ax.set_ylabel('Expected annual cost (USD millions)')
+            total_ax = fig.add_axes([.76, .23, .19, .58]); style(total_ax)
+            bars = total_ax.bar(REG, [sum(COMP[r].values()) for r in REG], color=[COL[r] for r in REG])
+            total_ax.bar_label(bars, fmt='%.1f', padding=3)
+            total_ax.set_title('Total')
+            total_ax.set_ylim(0, max(sum(COMP[r].values()) for r in REG)*1.18)
+            fig.legend(handles=[Line2D([0], [0], color=COL[r], lw=8, label=t['names'][i]) for i,r in enumerate(REG)], loc='lower center', bbox_to_anchor=(.5, .11), ncol=3, frameon=False)
+            fig.text(.06, .04, 'A has zero additional turnover cost relative to its baseline. Turnover estimates are illustrative; triage and morale are excluded.', fontsize=9, color='#596C7B')
+            fig.savefig(OUT/'cost_comparison_grouped.png', dpi=180)
+            fig.savefig(OUT/'cost_comparison_grouped.svg')
+            pdf.savefig(fig); plt.close(fig)
             generate_turnover_sensitivity(OUT, pdf)
 
     draw(language)
@@ -257,7 +277,7 @@ TEXT = {'names': ['A  No additional program', 'B  Maximum surveillance', 'C  Pri
 
 
 def main():
-    generate('en', TEXT, ['DejaVu Sans'], 'CRM project charts (en)\nSix figures: composition, exceedance, individual sensitivities, B/C break-even,\nevent frequency and severity, and illustrative turnover sensitivity. Currency: USD millions.\nFigures 1, 4, 5 and turnover sensitivity use analytical means; 2, 3 use 20,000 simulated years.\nEmployee costs represent illustrative turnover only; triage and morale costs are excluded.\nThe turnover scenario varies B while C stays at baseline.\nIntention gaps are assumptions, not proven effects; conversion and hiring costs are assumptions.\nFigure 4 and turnover sensitivity compare means only, not P95.\nRun from the project root: cd simulation && uv run --frozen python make_chart.py\nRun from the extracted bundle: cd scripts && uv run --frozen python make_chart.py\nRequires NumPy and Matplotlib. Font: DejaVu Sans.\n')
+    generate('en', TEXT, ['DejaVu Sans'], 'CRM project charts (en)\nSeven figures include a grouped cost comparison and illustrative turnover sensitivity.\nCurrency: USD millions. Figures 1, 4, 5, grouped costs and turnover sensitivity use\nanalytical means; 2, 3 use 20,000 simulated years. Employee costs represent\nillustrative additional turnover only; triage and morale costs are excluded.\nThe turnover scenario varies B while C stays at baseline.\nIntention gaps, conversion and hiring costs are assumptions.\nThe break-even and turnover charts compare means only, not P95.\nRun from the project root: cd simulation && uv run --frozen python make_chart.py\nRun from the extracted bundle: cd scripts && uv run --frozen python make_chart.py\nRequires NumPy and Matplotlib. Font: DejaVu Sans.\n')
 
 
 if __name__ == "__main__":

@@ -34,6 +34,7 @@ BNY is a global financial services firm (custody, payments, clearing, investment
 | 3 — BNY background | Company profile, scale, insider-risk relevance, SEC recordkeeping case |
 | 4 — Methodology | Simulation design, assumptions and their basis, parameters, results, limitations |
 | 5 — MITRE Navigation | Scenario-to-technique mapping, rationale, documented mitigation (M1057) |
+| 6 — Results | Comparison of model outcomes, coverage, sensitivity and limitations |
 
 ## References
 BNY. (2025). *2025 annual report*. https://www.bny.com/assets/corporate/documents/pdf/investor-relations/annual-report-2025.pdf
