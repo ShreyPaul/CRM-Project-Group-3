@@ -1,0 +1,28 @@
+{
+  "name": "monitoring-tradeoff-explorer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "baseline": "python3 scripts/generate_baseline.py",
+    "test": "node --import tsx tests/model.test.ts",
+    "test:browser": "node tests/browser.mjs",
+    "format": "prettier --write src tests package.json tsconfig.json vite.config.ts index.html"
+  },
+  "dependencies": {
+    "react": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+    "react-dom": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz"
+  },
+  "devDependencies": {
+    "@types/react": "https://registry.npmjs.org/@types/react/-/react-18.3.12.tgz",
+    "@types/react-dom": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.0.tgz",
+    "playwright": "https://registry.npmjs.org/playwright/-/playwright-1.59.1.tgz",
+    "prettier": "https://registry.npmjs.org/prettier/-/prettier-3.8.2.tgz",
+    "tsx": "https://registry.npmjs.org/tsx/-/tsx-4.21.0.tgz",
+    "typescript": "https://registry.npmjs.org/typescript/-/typescript-5.8.3.tgz",
+    "vite": "https://registry.npmjs.org/vite/-/vite-5.4.11.tgz"
+  }
+}
