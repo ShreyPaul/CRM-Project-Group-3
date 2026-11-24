@@ -36,7 +36,9 @@ PDF_PARAMETERS["A"]["program"] = (0, 0, 1)
 
 
 def pert_pdf_original(lo: float, mode: float, hi: float, n):
-    """PERT implementation exactly as printed in the outline."""
+    """Original PERT formula, extended to handle fixed-value inputs."""
+    if lo == hi:
+        return np.full(n, lo, dtype=float)
     mu = (lo + 4 * mode + hi) / 6
     alpha = 1 + 4 * (mu - lo) / (hi - lo)
     beta = 1 + 4 * (hi - mu) / (hi - lo)

@@ -10,7 +10,7 @@ These results are scenario estimates, not observed losses or a description of BN
 
 The three regimes were assessed against USB data theft (S1), personal email or cloud exfiltration (S2), and administrator sabotage (S3). Regime A represents no additional insider-threat monitoring program; Regime B represents maximum surveillance, including communications content and sentiment analysis; and Regime C combines monitoring with restrictions on data use and privacy safeguards.
 
-The Monte Carlo model simulated 20,000 years for each regime. Annual cost includes incident losses, the monitoring program, an illustrative first-year employee replacement cost and any modeled enforcement penalty. All amounts are in US dollars.
+The NumPy Monte Carlo model simulated 20,000 years for each regime (seed 20261120 plus the character code of the regime). Annual cost includes incident losses, the monitoring program, an illustrative first-year employee replacement cost and any modeled enforcement penalty. All amounts are in US dollars.
 
 | Regime | Mean annual cost | 95th-percentile annual cost |
 |---|---:|---:|
@@ -19,6 +19,12 @@ The Monte Carlo model simulated 20,000 years for each regime. Annual cost includ
 | C — Privacy-preserving monitoring | **$69.10 million** | **$107.46 million** |
 
 C's simulated mean was approximately $30.47 million lower than A's and $17.96 million lower than B's. Its 95th-percentile cost was also lower than both alternatives. The 95th percentile is the threshold at or below which approximately 95% of simulated annual costs fell; it is not a maximum possible cost or a confidence interval.
+
+The cost distribution is shown below. The fixed employee replacement component represents a first-year estimate, so these annual totals should not be read as a recurring multi-year forecast.
+
+![Simulated annual cost exceedance by regime](../../report/figs/02_cost_exceedance_en.png)
+
+*Figure 1. Share of simulated years exceeding each annual cost threshold; the markers identify the 95th percentiles.*
 
 The project's web explorer reports analytical expected costs of $99.61 million, $86.97 million and $69.31 million for A, B and C respectively. These use the same baseline assumptions but calculate expectations directly rather than estimating them from simulated years. Small differences from the simulation means are expected from sampling.
 
@@ -41,7 +47,19 @@ The employee replacement amounts are fixed first-year estimates. They apply assu
 
 ![Expected annual cost composition by monitoring regime](../../report/figs/01_cost_composition_en.png)
 
-*Figure 1. Expected cost components under the current baseline assumptions.*
+*Figure 2. Expected cost components under the current baseline assumptions.*
+
+![Grouped comparison of expected cost components](../../report/figs/cost_comparison_grouped.png)
+
+*Figure 3. Analytical expected costs by component and regime, with totals.*
+
+## Frequency and severity of incidents
+
+The model calculates expected successful incidents and average loss per incident separately. The analytical expected numbers of successful S1/S2/S3 incidents per year are 13.42/23.49/1.80 for A, 2.08/18.20/0.79 for B, and 2.08/15.60/0.61 for C. Average losses per successful incident are $1.03 million for S1, $3.08 million for S2 and $6.17 million for S3 across all regimes. These are analytical expectations calculated from assumed model inputs, not observed incident counts or losses.
+
+![Expected successful incidents and loss per incident](../../report/figs/05_events_vs_severity_en.png)
+
+*Figure 4. Analytical incident frequency and severity by scenario and regime. B and C overlap for S1.*
 
 ## Coverage of insider-threat techniques
 
@@ -51,7 +69,7 @@ B and C both include the same modeled USB blocking control and have the same map
 
 ![MITRE ATT&CK coverage across the three regimes](../../report/figs/fig_coverage.png)
 
-*Figure 2. Project mapping of the 16 in-scope techniques. Green indicates blocked, amber detected and red invisible.*
+*Figure 5. Project mapping of the 16 in-scope techniques. Green indicates blocked, amber detected and red invisible.*
 
 ## Sensitivity of the result
 
@@ -61,13 +79,21 @@ A separate analytical break-even calculation indicates that B's S2 success proba
 
 ![Comparison of individual sensitivity tests](../../report/figs/03_sensitivity_comparison_en.png)
 
-*Figure 3. Effect of selected changes to B's assumptions on simulated mean cost.*
+*Figure 6. Simulated mean and 95th-percentile costs for the baseline and one-at-a-time tests.*
+
+![Joint sensitivity of B and C expected costs](../../report/figs/04_bc_break_even_en.png)
+
+*Figure 7. Analytical difference between B and C when B’s S2 success probabilities and employee cost vary together; C remains at baseline. The boundary compares means, not tail risk.*
+
+![Turnover sensitivity for regime B](../../report/figs/06_turnover_sensitivity.png)
+
+*Figure 8. Analytical B costs across illustrative intention gaps and conversion rates, with C held at baseline. At zero incremental B turnover cost, B still costs $72.57 million versus C’s $69.31 million.*
 
 ## Interpretation and limitations
 
 The results support considering privacy safeguards alongside security controls when designing an insider-threat program. They also show that the estimated effectiveness of controls against email and cloud exfiltration, and the effect of monitoring on employee behaviour, are especially important to the decision. C has lower modeled cost despite some visibility gaps because the baseline assigns B more attempts and higher employee, program and enforcement costs.
 
-The attempt rates, success probabilities, loss ranges, enforcement probabilities and employee responses are scenario assumptions, not estimates calibrated to BNY's internal data. The turnover calculation uses an association from a survey as a starting point and assumes a conversion to departures; it does not establish a causal effect. The model also treats inputs independently and uses bounded loss distributions. These limitations mean the ranking should be tested with operational data before it is used to select a policy.
+The attempt rates, success probabilities, loss ranges, enforcement probabilities and employee responses are scenario assumptions, not estimates calibrated to BNY's internal data. The turnover calculation uses an association from a survey as a starting point and assumes a conversion to departures; it does not establish a causal effect. The model also treats inputs independently and uses bounded per-event loss distributions; annual aggregate losses are not bounded by the per-event maximum. The separate enforcement penalty may overlap incident loss. These limitations mean the ranking should be tested with operational data before it is used to select a policy.
 
 A practical next step would be to estimate attempted and successful incidents by channel, control effectiveness, program and alert-handling costs, monitoring coverage, and employee departures and replacement costs. Those measurements would allow the assumptions with the greatest effect on the result to be recalibrated.
 

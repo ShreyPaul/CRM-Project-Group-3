@@ -4,7 +4,7 @@ This review compares the report's values with the current model and selected ori
 
 ## Current model results
 
-The baseline values in Documents 4 and 6 reproduce the current NumPy chart output: simulated means of $99.57M, $87.06M and $69.10M and P95s of $150.00M, $138.74M and $107.46M for A, B and C. The individual sensitivities ($61.11M, $58.96M and $79.86M for B) also match the output. The analytical expectations in the index and web explorer ($99.61M, $86.97M and $69.31M) are consistent with the same inputs. They are direct expectations, not the simulation means; the index should label this distinction next to its simulated P95.
+The baseline values in Documents 4 and 6 reproduce the current NumPy chart output: simulated means of $99.57M, $87.06M and $69.10M and P95s of $150.00M, $138.74M and $107.46M for A, B and C. The individual sensitivities ($61.11M, $58.96M and $79.86M for B) also match the output. The analytical expectations in the index and web explorer ($99.61M, $86.97M and $69.31M) are consistent with the same inputs. They are direct expectations, not the simulation means; the index now labels this distinction next to its simulated P95.
 
 The component decomposition, $20,500 replacement cost and employee totals of $14,396,330 and $10,846,550 are arithmetically consistent with the stated assumptions. The break-even multiplier of approximately 68.5% also matches the model. These numbers are model outputs: the attempt rates, success probabilities, loss ranges, employee responses, costs and enforcement probabilities are scenario assumptions, not verified BNY observations. A first-year employee cost is included in each simulated annual total; it does not establish a recurring multi-year cost.
 
@@ -28,4 +28,4 @@ The component decomposition, $20,500 replacement cost and employee totals of $14
 
 ## Scope and remaining checks
 
-The output values were checked against the existing generated CSV and the model calculations. The web tests were not rerun because Node.js/npm were unavailable. TWOS session durations, every CERT release statistic, all vendor capabilities, every paper's causal interpretation and every legal reference were not independently verified. A broken NumPy formula-comparison script and other setup issues are described in the [consistency audit](Project%20consistency%20audit.md).
+The output values were checked against the existing generated CSV and the model calculations. The web tests were not rerun because Node.js/npm were unavailable. TWOS session durations, every CERT release statistic, all vendor capabilities, every paper's causal interpretation and every legal reference were not independently verified. The previously broken NumPy formula-comparison script has since been fixed and rerun; other setup issues are described in the [consistency audit](Project%20consistency%20audit.md).

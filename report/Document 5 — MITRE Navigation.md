@@ -1,6 +1,6 @@
 ## 1. Purpose and scope
 
-This document records the MITRE ATT&CK mapping used as the initial framework for comparing the three monitoring regimes. It identifies which in-scope techniques each regime blocks, detects without blocking, or cannot see, and it serves as the structural input to the FAIR-based cost simulation. The mapping follows ATT&CK v20, including the Defense Impairment split, and places each technique under a single principal tactic. Only the 16 in-scope techniques are mapped; the technique table in the figure-generation script (`TECHS`) is the source of truth for every status, figure, and Navigator layer described below.
+This document records the MITRE ATT&CK mapping used as the initial framework for comparing the three monitoring regimes. It identifies which in-scope techniques each regime blocks, detects without blocking, or cannot see, and provides qualitative context for the FAIR-based cost simulation; the simulation does not read the mapping or calculate its inputs from technique coverage. The mapping follows ATT&CK v20, including the Defense Impairment split, and places each technique under a single principal tactic. Only the 16 in-scope techniques are mapped; the technique table in the figure-generation script (`TECHS`) is the source of truth for the intended statuses and static figures; existing Navigator layers have discrepancies described below.
 
 ## 2. Regimes and scenarios
 
@@ -24,7 +24,7 @@ This document records the MITRE ATT&CK mapping used as the initial framework for
 | Detected, not blocked | Amber (`#F2C200`) | The regime produces telemetry or alerts, but prevention is not guaranteed |
 | Invisible | Red (`#C62828`) | The regime produces no telemetry for the technique; the attempt proceeds unobserved |
 
-Detection is not equated with prevention. Detected techniques retain non-zero success probabilities in the simulation; invisible techniques proceed at near-baseline success rates.
+The blocked label describes the intended control on the mapped path; the model retains nonzero S1 success probabilities to represent residual control failure or bypass. These residual probabilities are assumptions rather than a quantified control assessment. Detection is not equated with prevention. The simulation assigns success probabilities to scenarios, not individual techniques; coverage labels do not determine those probabilities.
 
 ## 4. In-scope techniques and regime coverage
 
@@ -68,7 +68,7 @@ T1005 is tagged as applicable to both S1 and S2 in the coverage table; it is dra
 | Scenario | Techniques shown | A | B | C |
 |---|---|---|---|---|
 | S1 | 5 | 5 invisible | 4 detected, 1 blocked | 4 detected, 1 blocked |
-| S2 | 11 | 11 invisible | 11 detected | 7 detected, 4 invisible |
+| S2 | 11 | 11 invisible | 10 detected, 1 invisible | 7 detected, 4 invisible |
 | S3 | 5 (incl. T1078) | 5 invisible | 5 detected | 5 detected |
 
 Key asymmetries, as specified by the authors' mapping:
@@ -80,7 +80,7 @@ Key asymmetries, as specified by the authors' mapping:
 
 ## 7. ATT&CK Navigator layers
 
-Nine Navigator layers accompany this mapping, one per scenario–regime pair. Each layer colours only the techniques in that scenario's chain, using the regime's status and the shared palette above; out-of-scope techniques are left uncoloured.
+Nine scenario–regime layer files accompany this mapping. The table below gives the intended coverage of each scenario chain; the existing files do not all match it.
 
 | Layer | Scenario | Regime | Coverage profile |
 |---|---|---|---|
@@ -88,13 +88,13 @@ Nine Navigator layers accompany this mapping, one per scenario–regime pair. Ea
 | S1–B | USB theft | B | 4 detected, 1 blocked |
 | S1–C | USB theft | C | 4 detected, 1 blocked |
 | S2–A | Email/cloud theft | A | 11 invisible |
-| S2–B | Email/cloud theft | B | 11 detected |
+| S2–B | Email/cloud theft | B | 10 detected, 1 invisible |
 | S2–C | Email/cloud theft | C | 7 detected, 4 invisible |
 | S3–A | Admin sabotage | A | 5 invisible |
 | S3–B | Admin sabotage | B | 5 detected |
 | S3–C | Admin sabotage | C | 5 detected |
 
-The layers are the interactive counterpart to the static plates. If a technique is recoloured in Navigator, the matching row in `TECHS` must be edited and the script re-run so that layers, figures and this document remain consistent.
+The existing Navigator JSON layers do not consistently match the table or static plates, and `rc-s1.json` contains three layers. Treat the static figures and `TECHS` as the authoritative project mapping until the JSON layers are reconciled. The figure script does not generate Navigator layers; changes require a separate JSON update and verification. See the [consistency audit](../project-audits/Project%20consistency%20audit.md).
 
 ## 8. Report figures
 
@@ -109,6 +109,34 @@ The self-contained script (no input files) exports every figure as PNG (300 dpi)
 | `fig_scenario_S1` | Stripe matrix | S1 chain only, with chain caption | Scenario card |
 | `fig_scenario_S2` | Stripe matrix | S2 chain and alternate channels, with chain caption | Scenario card |
 | `fig_scenario_S3` | Stripe matrix | S3 chain only, with chain caption | Scenario card |
+
+![Coverage of all techniques by regime](figs/fig_coverage.png)
+
+*Figure 1. Coverage across all three regimes.*
+
+![Regime A technique coverage](figs/fig_regime_A.png)
+
+*Figure 2. Regime A coverage.*
+
+![Regime B technique coverage](figs/fig_regime_B.png)
+
+*Figure 3. Regime B coverage.*
+
+![Regime C technique coverage](figs/fig_regime_C.png)
+
+*Figure 4. Regime C coverage.*
+
+![USB theft scenario coverage](figs/fig_scenario_S1.png)
+
+*Figure 5. S1: USB theft chain.*
+
+![Email and cloud theft scenario coverage](figs/fig_scenario_S2.png)
+
+*Figure 6. S2: email and cloud theft chain and alternate channels.*
+
+![Administrator sabotage scenario coverage](figs/fig_scenario_S3.png)
+
+*Figure 7. S3: administrator sabotage chain.*
 
 Each figure carries the legend (green blocked, amber detected not blocked, red invisible) and the source line: "Source: authors' mapping, ATT&CK v20; each technique shown under its principal tactic. Only the in-scope techniques are shown." The script also prints an ID/scenario/A/B/C audit table (`inv`/`det`/`blk`) to the console for verification against this document.
 

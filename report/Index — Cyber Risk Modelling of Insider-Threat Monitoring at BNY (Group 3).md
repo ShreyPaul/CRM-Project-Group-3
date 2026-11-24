@@ -22,9 +22,9 @@ These are analytical scenarios, not descriptions of BNY's actual monitoring arra
 BNY is a global financial services firm (custody, payments, clearing, investment management) with 48,100 employees at year-end 2025 and $59.3 trillion in assets under custody/administration (BNY, 2025). Details: **Document 3**.
 
 ## Headline results (baseline assumptions)
-- Expected annual total cost: **A $99.61M, B $86.97M, C $69.31M**. C also has the lowest 95th-percentile cost ($107.46M).
+- Analytical expected annual total cost: **A $99.61M, B $86.97M, C $69.31M**. In the NumPy simulation, C also has the lowest 95th-percentile cost ($107.46M).
 - **Personal email/cloud exfiltration (S2)** is the largest cost driver in every regime.
-- The ranking is assumption-dependent: removing B's extra attack attempts, or cutting B's S2 success probabilities by ~31.5%, makes B cheaper than C. Full results and sensitivities: **Document 4**.
+- The ranking is assumption-dependent: removing B's extra S2 and S3 attack attempts makes B cheaper than C; cutting B's S2 success probabilities by ~31.5% brings their analytical expected costs to break-even. Full results and sensitivities: **Document 4**.
 
 ## Document map
 | Document | Contents |
