@@ -43,8 +43,6 @@ MITRE ATT&CK, a public knowledge base of adversary behavior and techniques based
 | B: Maximum surveillance | Full-content email/chat scanning with sentiment analysis, session recording, USB blocking, DLP across channels, all alerts sent to the SOC, no anonymization, and indefinite retention. |
 | C: Privacy-preserving monitoring | The same USB, identity-and-access, and DLP blocking controls as B, but monitoring focuses on metadata and behavioral anomalies. Identities remain pseudonymous until a threshold is met; content or identity disclosure requires two-person approval; the outline proposes 90-day retention, subject to the scope clarification below; no sentiment inference is used. |
 
-**Retention needs a scope clarification.** A blanket 90-day deletion rule would conflict with broker-dealer business-communication requirements: Rule 17a-4(b)(4) requires at least three years, with the first two readily accessible. For C, the proposed 90-day limit should apply only to optional monitoring analytics eligible for deletion; required records and legal holds need separate retention rules. This is a proposed clarification of the outline, not a verified deployed design. The model does not separately price this separation, so it cannot establish C's legal compliance or complete implementation cost. [17 CFR 240.17a-4](https://www.ecfr.gov/current/title-17/chapter-II/part-240/section-240.17a-4)
-
 ## 3. Where the numbers come from
 
 ### Public evidence
@@ -53,7 +51,7 @@ MITRE ATT&CK, a public knowledge base of adversary behavior and techniques based
 |---|---:|---|
 | BNY full-time employees, 2025 | 48,100; 51,800 in 2024 | Scale context and employee-cost calculations. The 48,100-to-10,000 ratio is 4.81×; applying that factor linearly to attempt estimates is a modeling assumption, not a rate established by the annual report. |
 | BNY 2025 revenue and noninterest expense | $20.080B; $13.054B | Cost plausibility checks and comparison of modeled losses with revenue. |
-| BNY 2025 Staff expense | $7.159B | About $149k per year-end employee when divided by headcount. This is a rough all-staff expense proxy, not average salary. The $136k worksheet proxy came from assuming staff costs were 50% of total expense. The calculation below replaces that proxy with the reported Staff line for comparison. |
+| BNY 2025 Staff expense | $7.159B | About $149k per year-end employee when divided by headcount. This is a rough all-staff expense proxy, not average salary. |
 | BNY 2025 AUC/A and AUM | $59.3T; $2.2T | Business-scale context; these balances do not determine per-incident loss. |
 | Ponemon 2026 insider-risk study | $742,125 average cost per malicious-insider incident and 6.3 such incidents per organization; $19.5M average annual cost across insider-risk categories; 67-day average containment | Cross-organization context and a reference point for S1 severity, not BNY incident rates. The study was sponsored by DTEX and covers several types of insider risk. |
 | IBM 2026 Cost of a Data Breach study | $6.3M average per financial-services data breach | A broad industry reference for S1/S2 data-exposure severity, not an insider-only figure or a scenario-specific distribution. |
@@ -62,7 +60,7 @@ MITRE ATT&CK, a public knowledge base of adversary behavior and techniques based
 
 BNY employee and financial figures are from its [2025 Annual Report](https://prodcs.bny.com/assets/corporate/documents/pdf/investor-relations/annual-report-2025.pdf). Ponemon figures are in the [study summary](https://www.ponemon.org/news-updates/blog/security/lessons-learned-from-the-2026-global-cost-of-insider-risks.html) and [2026 report page](https://ponemon.dtex.ai/); the penalty and case facts are in the [SEC order](https://www.sec.gov/files/litigation/admin/2024/34-100712.pdf); the technology-spend quote is in the [BNY Q3 2026 call transcript](https://www.fool.com/earnings/call-transcripts/2026/10/16/bny-bny-q3-2026-earnings-call-transcript/).
 
-For review: the annual report's printed p. 2 (PDF p. 25) contains the financial summary; printed p. 10 (PDF p. 33) gives Staff expense and headcount. The SEC order's Section IV.D (PDF p. 10) specifies one $40M penalty jointly and severally, not $40M per company. BNY's [official event calendar](https://www.bny.com/corporate/global/en/investor-relations/events-and-presentations.html) confirms the call date; the spending quotation remains supported by a third-party transcript, not an original BNY transcript reviewed here. Monetary benchmarks retain their source years; no common-year inflation adjustment was applied.
+For review: the annual report's printed p. 2 (PDF p. 25) contains the financial summary; printed p. 10 (PDF p. 33) gives Staff expense and headcount. The SEC order's Section IV.D (PDF p. 10) specifies one $40M penalty jointly and severally, not $40M per company. Monetary benchmarks retain their source years; no common-year inflation adjustment was applied.
 
 ### What public evidence can and cannot establish
 
@@ -241,7 +239,7 @@ The outline's expected A cost of $60–70M conflicts with the standard-PERT anal
 
 ## 8. Presentation figures and joint sensitivity findings
 
-[English five-page PDF](output/project_charts/project_figures_en.pdf) | [Traditional Chinese PDF](output/project_charts/project_figures_zh.pdf) | [Figures and review data ZIP](output/project_charts/project_charts_bundle.zip)
+[English five-page PDF](output/project_charts/project_figures_en.pdf) | [Figures and review data ZIP](output/project_charts/project_charts_bundle.zip)
 
 All figures use the same corrected inputs. Figures 1, 4, and 5 use analytical expectations; Figures 2 and 3 use 20,000 simulated years per regime. Small differences between analytical and simulated means reflect sampling error. Currency is USD; M means million. These are conditional scenario results.
 

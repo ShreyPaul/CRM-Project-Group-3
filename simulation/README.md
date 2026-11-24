@@ -1,6 +1,6 @@
 # Reproduce the simulation figures
 
-This folder generates five English figures comparing three insider-threat monitoring regimes at BNY scale. All model inputs are defined in `run_validation.py`; no external dataset or PDF is needed to run the code.
+This folder generates five baseline English figures and an illustrative turnover sensitivity chart comparing three insider-threat monitoring regimes at BNY scale. Baseline inputs are defined in `run_validation.py` and turnover scenario assumptions in `turnover_sensitivity.py`; no external dataset or PDF is needed to run the code.
 
 ## Files to commit
 
@@ -9,6 +9,7 @@ This folder generates five English figures comparing three insider-threat monito
 | `make_chart.py` | Generates the figures, review data, and ZIP bundle. |
 | `run_validation.py` | Defines model parameters, analytical expectations, and sensitivity cases. |
 | `run_numpy_validation.py` | Provides the NumPy sampler and simulation used by the chart script. |
+| `turnover_sensitivity.py` | Calculates and charts illustrative first-year turnover scenarios. |
 | `pyproject.toml` | Declares Python and package requirements. |
 | `uv.lock` | Locks dependency versions for reproduction. |
 | `.gitignore` | Excludes generated outputs, environments, and caches. |
@@ -30,8 +31,8 @@ The first run needs network access to install dependencies. Matplotlib uses a no
 
 Results are written to `output/project_charts/en/`. Running again overwrites files with the same names.
 
-- Five PNG and five SVG figures: cost composition, cost exceedance, individual sensitivities, B/C break-even, and event frequency versus severity.
-- `project_figures_en.pdf`: all five figures in one PDF.
+- Six PNG and six SVG figures: cost composition, cost exceedance, individual sensitivities, B/C break-even, event frequency versus severity, and turnover sensitivity.
+- `project_figures_en.pdf`: all six figures in one PDF.
 - CSV files: cost components, annual samples, sensitivity results, event severity, and the break-even grid.
 - `methods_and_inputs.json`: parameters, seeds, software versions, and source hashes.
 - `project_charts_bundle.zip`: figures, review data, and reproduction files under `scripts/`.
@@ -45,11 +46,11 @@ The model uses 20,000 simulated years per regime and seed `20261120 + ord(regime
 | Regime | Mean annual cost | P95 |
 |---|---:|---:|
 | A | 99.57 | 150.00 |
-| B | 93.01 | 145.39 |
-| C | 61.08 | 99.79 |
+| B | 87.06 | 138.74 |
+| C | 69.10 | 107.46 |
 
 Figures 1, 4, and 5 use analytical expectations; figures 2 and 3 use simulated samples. The script checks simulated means against analytical means within 3% and checks the break-even grid against the model evaluator. Python and library versions are recorded in the manifest; image bytes can differ across platforms even when numerical results agree.
 
 These are conditional scenario results, not observed BNY losses. Figure 4 compares mean costs only, not P95. Changing model parameters requires regenerating the figures.
 
-Generated files belong in `output/`, which Git ignores. Commit the seven files listed above; existing charts, reports, PDFs, virtual environments, and cached data are not inputs to this simulation.
+Generated files belong in `output/`, which Git ignores. Existing charts, reports, PDFs, virtual environments, and cached data are not inputs to this simulation. B and C baseline employee costs use fixed illustrative first-year turnover estimates; triage and morale are excluded. The turnover chart varies B's assumed turnover cost while C stays at baseline, and compares means rather than P95. See `monitoring_turnover_findings.md` for assumptions and evidence limitations.
