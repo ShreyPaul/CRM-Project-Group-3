@@ -1,93 +1,162 @@
-Document 4 — Methodology
+## Monte Carlo Cost Model of Insider-Threat Monitoring Regimes (BNY Context)
 
-## Design
-We use **Monte Carlo simulation** to compare annual costs under three regimes (A: no additional monitoring; B: maximum surveillance; C: privacy-preserving monitoring), each evaluated across three scenarios:
+**Final simulated results (mean annual total cost, 20,000 simulated years per regime):**
+
+| Regime | Description | Mean annual total cost |
+|---|---|---|
+| A | No additional monitoring program | **$99.57M** |
+| B | Maximum surveillance | **$87.06M** |
+| C | Privacy-preserving monitoring | **$69.10M** |
+
+---
+
+## 1. Objective and Scope
+
+The model compares the expected annual cost of insider risk under three monitoring regimes, using BNY as the organizational context. The regimes are analytical scenarios, not descriptions of BNY's actual monitoring arrangements. Each regime is evaluated against three insider-threat scenarios:
 
 - **S1** — USB data theft
-- **S2** — personal email/cloud exfiltration
-- **S3** — administrator sabotage
+- **S2** — Personal email / cloud exfiltration
+- **S3** — Administrator sabotage
 
-Mechanics:
-- 20,000 simulated years per regime.
-- Uncertain inputs follow **Beta-PERT distributions** (minimum / most likely / maximum; shape λ = 4).
-- Successful incident counts follow a **Poisson distribution** with rate = sampled annual attempts × sampled success share.
-- Each successful incident receives a sampled loss.
-- **Total cost = incident losses + monitoring program cost + fixed first-year employee replacement cost + enforcement penalty (if a sampled enforcement event occurs).**
-- Seeds: base 20261120; regime seed = base + ord(regime).
+Company scale (2025 financial baseline): assets under custody/administration $59.3T; assets under management $2.178T; full-time employees 48,100; annual revenue $20.080B; noninterest expense $13.054B; staff expense $7.159B. The reported workforce supplies the scale for the turnover calculation.
 
-Figures 1, 4, 5, 6 in the source use analytical expectations; Figures 2 and 3 use Monte Carlo results.
+## 2. Annual Cost Structure
 
-## Parameters (min / mode / max; USD)
+For each simulated year, total cost is the sum of four components:
 
-**Attempts per year**
+**Total cost = Incident losses (S1 + S2 + S3) + Monitoring program cost + First-year employee replacement cost (fixed) + Enforcement penalty (if an enforcement event occurs)**
+
+Alert triage and morale/productivity effects are excluded.
+
+## 3. Distributions and Sampling Method
+
+| Element | Treatment |
+|---|---|
+| Uncertain inputs (attempts, success shares, losses, program costs, enforcement probabilities, penalties) | Beta-PERT, defined by minimum / most likely (mode) / maximum, shape parameter λ = 4 |
+| Successful incident count per scenario | Poisson, with rate = sampled annual attempts × sampled success share |
+| Loss per successful incident | Independent Beta-PERT draw per event; identical loss distributions across A, B and C |
+| Enforcement | Annual probability sampled from Beta-PERT; enforcement event drawn against that probability; penalty sampled from Beta-PERT if the event occurs |
+| Employee replacement cost | Fixed first-year amount per regime (Section 6) |
+
+Beta-PERT with λ = 4 gives mean = (min + 4 × mode + max) / 6, with shape parameters α = 1 + 4(mode − min)/(max − min) and β = 1 + 4(max − mode)/(max − min).
+
+## 4. Simulation Settings
+
+| Setting | Value |
+|---|---|
+| Simulated years per regime | 20,000 |
+| Uncertain-input distribution | Beta-PERT, λ = 4 |
+| Successful incident count | Poisson (rate = sampled attempts × sampled success share) |
+| Base random seed | 20261120 |
+| Regime-specific seed | Base seed + ord(regime) → A: 20261185; B: 20261186; C: 20261187 |
+
+**Procedure per simulated year, per regime:**
+1. Sample annual attempts, success share, program cost, enforcement probability and (conditionally) penalty from their Beta-PERT distributions.
+2. For each scenario s, compute rate = attempts × success share; draw the successful-event count from Poisson(rate).
+3. Draw one loss per successful event and sum to obtain scenario incident losses.
+4. Add the program cost and the fixed first-year replacement cost.
+5. Draw the enforcement event; if it occurs, add the sampled penalty.
+6. Record the annual total; after 20,000 years, report the mean and the 95th percentile.
+
+## 5. Input Parameters (Appendix A Values)
+
+All triples are minimum / most likely / maximum. Monetary values in USD; M denotes millions.
+
+### 5.1 Attempts per year
+
 | Scenario | A | B | C |
 |---|---|---|---|
 | S1 | 10 / 19 / 29 | 10 / 19 / 29 | 10 / 19 / 29 |
 | S2 | 14 / 29 / 48 | 24 / 48 / 96 | 14 / 34 / 58 |
 | S3 | 1 / 2.4 / 4.8 | 1.4 / 3.8 / 7.2 | 1 / 2.9 / 5.8 |
 
-**Share of attempts that succeed**
+### 5.2 Share of attempts that succeed
+
 | Scenario | A | B | C |
 |---|---|---|---|
 | S1 | 0.50 / 0.70 / 0.90 | 0.05 / 0.10 / 0.20 | 0.05 / 0.10 / 0.20 |
 | S2 | 0.60 / 0.80 / 0.95 | 0.20 / 0.35 / 0.50 | 0.30 / 0.45 / 0.60 |
 | S3 | 0.50 / 0.70 / 0.90 | 0.10 / 0.20 / 0.30 | 0.10 / 0.20 / 0.30 |
 
-**Loss per successful event** (same for A, B, C): S1 $0.2M / $0.75M / $3M; S2 $0.5M / $2M / $10M; S3 $1M / $4M / $20M.
+### 5.3 Loss per successful event (identical across regimes)
 
-**Program cost per year:** A $0; B $2.5M / $5M / $7M; C $1.5M / $3M / $5M.
+| Scenario | Minimum / most likely / maximum |
+|---|---|
+| S1 | $0.2M / $0.75M / $3M |
+| S2 | $0.5M / $2M / $10M |
+| S3 | $1M / $4M / $20M |
 
-**Annual probability of off-channel enforcement:** A 0.02 / 0.05 / 0.08; B 0.05 / 0.10 / 0.15; C 0.01 / 0.03 / 0.05. Rationale for the regime ordering: **[blank — not in source]**.
-**Penalty conditional on enforcement** (all regimes): $10M / $40M / $100M.
+### 5.4 Monitoring program cost per year
 
-**Employee replacement cost (fixed, first year):** A $0; B $14,396,330; C $10,846,550. Formula (same for B and C): workforce × incremental intention gap × conversion to departures × replacement share × cost per replacement.
+| A | B | C |
+|---|---|---|
+| $0 / $0 / $0 | $2.5M / $5M / $7M | $1.5M / $3M / $5M |
+
+### 5.5 Off-channel enforcement
+
+| Element | A | B | C |
+|---|---|---|---|
+| Annual probability of enforcement | 0.02 / 0.05 / 0.08 | 0.05 / 0.10 / 0.15 | 0.01 / 0.03 / 0.05 |
+| Penalty conditional on enforcement (all regimes) | $10M / $40M / $100M | — | — |
+
+## 6. First-Year Employee Replacement Cost (Fixed)
+
+**Formula:** workforce × incremental turnover-intention gap × conversion to departures × replacement share × cost per replacement.
+
+**Cost per replacement:** $15,000 (hiring, onboarding, ramp-up) + $3,000 (net vacancy) + 50% × $5,000 (first-year compensation difference) = **$20,500**.
+
 | Input | A | B | C |
 |---|---|---|---|
 | Workforce | 48,100 | 48,100 | 48,100 |
-| Additional turnover-intention gap vs A | 0 pp | 7.3 pp | 5.5 pp |
-| Conversion to departures | — | 25% | 25% |
-| Share replaced | — | 80% | 80% |
-| Hiring/onboarding/ramp-up per replacement | — | $15,000 | $15,000 |
-| Net vacancy cost per replacement | — | $3,000 | $3,000 |
-| Annual compensation difference per replacement | — | $5,000 | $5,000 |
-| First-year fraction of compensation difference | — | 50% | 50% |
+| Additional turnover-intention gap vs. A | 0 pp | 7.3 pp | 5.5 pp |
+| Conversion to actual departures | — | 25% | 25% |
+| Share of additional departures replaced | — | 80% | 80% |
+| **Fixed first-year replacement cost** | **$0** | **$14,396,330** | **$10,846,550** |
 
-Cost per replacement = $20,500. These costs exclude alert triage and morale/productivity effects.
+## 7. Component Sub-Values (Expected Cost Decomposition)
 
-## Where the assumptions come from
-| Input | Basis and limitations |
-|---|---|
-| Company scale | BNY reports 48,100 year-end employees; applying turnover to the full workforce and scaling attempts with headcount are modelling choices (BNY, 2025) |
-| Attempts and success shares | Scenario estimates informed by insider-risk benchmarks and documented control capabilities. Ponemon reports incidents, not attempted actions; MITRE describes controls without establishing success probabilities (Ponemon Institute, 2026; MITRE ATT&CK, n.d.) |
-| Loss per incident | Published insider-incident and financial-services breach costs give severity context; the min/mode/max values remain estimates — a published mean does not establish a mode or distribution (Ponemon Institute, 2026; IBM, 2026) |
-| Replacement costs | B's 7.3-pp gap informed by a Norwegian monitoring survey; C's 5.5-pp gap assumed; illustrative, not causal BNY turnover (Flatø & Lund-Tønnesen, 2025; BNY, 2025) |
-| Program costs | Regime-specific estimates; public vendor prices give context but do not validate BNY spending or the B/C difference (Microsoft, n.d.) |
-| Enforcement | The historical $40M BNY-related penalty informs severity; annual probabilities and penalty range are scenario assumptions (SEC, 2024) |
+Closed-form expectations (product of PERT means under independence) are used for the cost decomposition; the headline results in Section 8 are the simulation means. Mean loss per event: S1 ≈ $1.03M; S2 ≈ $3.08M; S3 ≈ $6.17M.
 
-Regime differences represent **hypotheses** about control effectiveness and employee behaviour, not measured effects.
+| Component (expected, $M) | A | B | C |
+|---|---|---|---|
+| S1 incident losses | 13.86 | 2.15 | 2.15 |
+| S2 incident losses | 72.42 | 56.12 | 48.10 |
+| S3 incident losses | 11.08 | 4.89 | 3.78 |
+| Monitoring program | 0.00 | 4.92 | 3.08 |
+| Employee replacement (fixed) | 0.00 | 14.40 | 10.85 |
+| Expected enforcement penalty | 2.25 | 4.50 | 1.35 |
 
-## Results (USD millions)
-- **Expected totals:** A $99.61M; B $86.97M; C $69.31M. S2 is the largest component in every regime: $72.42M / $56.12M / $48.10M.
-- **Exceedance (Monte Carlo):** P95 costs A $150.00M; B $138.74M; C $107.46M. C has the lowest tail risk.
-- **Frequency vs severity:** S3 has the highest mean loss per event (~$6.17M; S2 $3.08M; S1 $1.03M), but S2 occurs more often and drives total expected loss. B and C overlap on S1 (identical inputs).
-- **Sensitivity (Monte Carlo):** B's mean falls from $87.06M to $61.11M if its extra S2/S3 attempts are removed, and to $58.96M if its S2 success probabilities are halved — both below C's $69.10M. Halving B's replacement cost gives $79.86M (C still cheaper). P95 rankings match.
-- **Turnover sensitivity:** varying B's intention gap (0 / 7.3 / 19 pp) and conversion (10% / 25% / 50%), B ranges $72.57M–$147.51M; C stays $69.31M. Turnover changes alone do not reverse the baseline decision.
-- **Break-even:** with employee costs unchanged, B matches C when its S2 success probabilities fall to ~68.5% of baseline (a 31.5% relative reduction). Halving both S2 success and replacement cost gives B $51.71M vs C $69.31M.
+Notes: S2 is the principal cost driver in every regime. B and C share identical S1 inputs. Components are rounded; the simulation means deviate from the closed-form component sums by less than approximately $0.25M per regime, consistent with Monte Carlo sampling error at 20,000 draws.
+
+## 8. Results
+
+| Statistic | A | B | C |
+|---|---|---|---|
+| **Mean annual total cost (Monte Carlo)** | **$99.57M** | **$87.06M** | **$69.10M** |
+| 95th-percentile annual cost (P95) | $150.00M | $138.74M | $107.46M |
+
+C has both the lowest mean and the lowest tail cost; approximately 5% of simulated years exceed the respective P95 amounts.
+
+## 9. Sensitivity and Break-Even (Supporting Analysis)
+
+- **One-at-a-time changes to B (Monte Carlo, holding A and C at baseline):** removing B's additional S2/S3 attempt rates lowers B's mean to $61.11M; halving B's S2 success probabilities lowers it to $58.96M — both below C's $69.10M. Halving B's replacement cost gives $79.86M, leaving C cheaper.
+- **Break-even (closed-form expectations):** with employee costs unchanged, B reaches equal expected cost when its S2 success probabilities fall to approximately 68.5% of baseline (a 31.5% relative reduction).
+- **Turnover-only sensitivity:** varying B's intention gap (0 / 7.3 / 19 pp) and conversion (10% / 25% / 50%) moves B between $72.57M and $147.51M; C remains cheaper throughout this comparison.
+
+## 10. Assumptions and Limitations
+
+- Attack rates, control effectiveness and employee responses are team-defined scenario assumptions; published sources provide scale and context only (Ponemon reports incidents rather than attempts; MITRE describes controls without establishing success probabilities; published means do not establish modes).
+- The 7.3-point intention gap is informed by a Norwegian monitoring survey and does not measure causal BNY turnover; applying it to the full workforce is a modeling choice.
+- Program costs are regime-specific estimates; vendor pricing provides context, not validation of the B/C difference.
+- The $40M penalty mode is informed by the 2024 SEC recordkeeping order (BNY Mellon Securities Corporation and Pershing LLC); annual probabilities and the penalty range remain assumptions.
 
 ## References
-BNY. (2025). *2025 annual report*. https://www.bny.com/assets/corporate/documents/pdf/investor-relations/annual-report-2025.pdf
 
-Flatø, ____, & Lund-Tønnesen, ____. (2025). *Electronic monitoring and turnover intention*. https://doi.org/10.1080/14719037.2025.2608281
-
-IBM. (2026). *2026 cost of a data breach findings* [Press release]. https://newsroom.ibm.com/2026-07-29-ibm-study-one-in-four-malicious-breaches-are-ai-enabled,-costing-companies-6-million-on-average
-
-Microsoft. (n.d.). *Microsoft Purview pricing*. https://www.microsoft.com/en-us/security/microsoft-purview-pricing
-
-MITRE ATT&CK. (n.d.). *Data loss prevention (M1057)*. https://attack.mitre.org/mitigations/M1057/
-
-Ponemon Institute. (2026). *Lessons learned from the 2026 global cost of insider risks*. https://www.ponemon.org/news-updates/blog/security/lessons-learned-from-the-2026-global-cost-of-insider-risks.html
-
-SEC. (2024). *Order 34-100712* (Section IV.D). https://www.sec.gov/files/litigation/admin/2024/34-100712.pdf
-
----
-
+1. The Bank of New York Mellon (BNY). (2025). *2025 Annual Report*. https://www.bny.com/corporate/global/en/investor-relations/annual-report-2025.html
+2. Ponemon Institute. (2026). *Lessons Learned from the 2026 Global Cost of Insider Risks*. https://www.ponemon.org/news-updates/blog/security/lessons-learned-from-the-2026-global-cost-of-insider-risks.html
+3. MITRE ATT&CK. (n.d.). *Data Loss Prevention (M1057)*. https://attack.mitre.org/mitigations/M1057/
+4. IBM. (2026). *Cost of a Data Breach Report 2026*. https://www.ibm.com/reports/data-breach
+5. Flatøy, C. A., & Lund-Tønnesen, J. (2025). *Electronic monitoring, trust, and turnover intention in the public and private sector*. https://www.tandfonline.com/doi/full/10.1080/14719037.2025.2608281
+6. Microsoft. (n.d.). *Microsoft Purview pricing*. https://www.microsoft.com/en-us/security/microsoft-purview-pricing
+7. U.S. Securities and Exchange Commission (SEC). (2024). *Order Instituting Administrative and Cease-and-Desist Proceedings (Release No. 34-100712)*. https://www.sec.gov/files/litigation/admin/2024/34-100712.pdf
+8. American Psychological Association (APA). (2023). *2023 Work in America: AI, monitoring technology, and psychological well-being*. https://www.apa.org/topics/healthy-workplaces/employee-electronic-monitoring
