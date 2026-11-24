@@ -21,7 +21,11 @@ If employees are aware of constant monitoring, even honest employees will change
 **MITRE Insider Threat Research & Solutions (n.d.)** — Language and sentiment analysis has not shown strong proactive detection and produces many irrelevant alerts.
 *Our comment:* A direct caution against the vendor claims in Document 1.
 
-**American Psychological Association (2023)** — *Work in America* report on AI, monitoring technology, and psychological well-being; listed as a project source. Specific findings: **[blank — not extracted in source]**.
+**American Psychological Association (2023)** — *Work in America* report on AI, monitoring technology, and psychological well-being. Specific findings: 
+- **32%** of monitored employees report their overall mental health as poor or fair, compared to 24% of unmonitored workers.
+- **45%** of monitored workers state that their work environment has a negative impact on their mental health, compared to 29% of unmonitored workers.
+- **56%** of monitored workers typically feel tense or stressed during their workday, compared to 40% of those who are not monitored.
+- **42%** of monitored workers intend to look for a new job at a different company or organization within the next 12 months, compared to only 23% of those who are not monitored (the overall average intent to leave across all workers is 33%).
 
 ## How this feeds the model (Document 4)
 - Employee replacement costs for B and C, driven by assumed turnover-intention gaps.
@@ -41,7 +45,7 @@ MITRE Insider Threat Research & Solutions. (n.d.). *Guiding principles*. https:/
 
 Ravid, D. M., White, J. C., Tomczak, D. L., Miles, A. F., & Behrend, T. S. (2023). A meta-analysis of the effects of electronic performance monitoring on work outcomes. *Personnel Psychology, 76*(1).
 
-Thiel, C. E., Bonner, J. M., Bush, J., Welsh, D., & Garud, N. (2023). Stripped of agency: The paradoxical effect of employee monitoring on deviance. *Journal of Management*. [Volume/pages blank — not in source]
+Thiel, C. E., Bonner, J. M., Bush, J., Welsh, D., & Garud, N. (2023). Stripped of agency: The paradoxical effect of employee monitoring on deviance. *Journal of Management*. 
 
 ---
 
