@@ -17,10 +17,14 @@ REGIMES = ["A", "B", "C"]
 PAL = {"blocked": "#2E7D32", "detected": "#F2C200", "invisible": "#C62828"}
 LBL = {"blocked": "Blocked", "detected": "Detected, not blocked", "invisible": "Invisible"}
 FG = lambda b: "#FFFFFF" if b in ("blocked", "invisible") else "#212121"
+
+# Updated tactic list and labels to reflect ATT&CK v20 Defense Impairment split
 TLABEL = {"initial-access": "Initial Access", "persistence": "Persistence",
-          "stealth": "Stealth", "collection": "Collection",
-          "exfiltration": "Exfiltration", "impact": "Impact"}
-TCOLS = ["initial-access", "persistence", "stealth", "collection", "exfiltration", "impact"]
+          "stealth": "Stealth", "defense-impairment": "Defense Impairment",
+          "collection": "Collection", "exfiltration": "Exfiltration", "impact": "Impact"}
+TCOLS = ["initial-access", "persistence", "stealth", "defense-impairment",
+         "collection", "exfiltration", "impact"]
+
 PAD, TITLE_H, HEAD_H, REG_H, GAP, LEG_H = .16, .34, .30, .26, .06, .52
 
 # tid, name, tactic, scenarios, (A, B, C)
@@ -28,7 +32,7 @@ TECHS = [
     ("T1078",     "Valid Accounts",                         "initial-access", "S1 S2 S3", ("invisible", "detected", "detected")),
     ("T1078.002", "Domain Accounts",                        "initial-access", "S3",       ("invisible", "detected", "detected")),
     ("T1098",     "Account Manipulation",                   "persistence",    "S3",       ("invisible", "detected", "detected")),
-    ("T1562.001", "Disable or Modify Tools",                "stealth",        "S3",       ("invisible", "detected", "detected")),
+    ("T1685",     "Disable or Modify Tools",                "defense-impairment", "S3",   ("invisible", "detected", "detected")),
     ("T1213",     "Data from Information Repositories",     "collection",     "S1 S2",    ("invisible", "detected", "detected")),
     ("T1074",     "Data Staged",                            "collection",     "S1 S2",    ("invisible", "detected", "detected")),
     ("T1560",     "Archive Collected Data",                 "collection",     "S1 S2",    ("invisible", "detected", "detected")),
@@ -43,7 +47,6 @@ TECHS = [
     ("T1485",     "Data Destruction",                       "impact",         "S3",       ("invisible", "detected", "detected")),
 ]
 
-# --- new: per-scenario ordering and chain strings -------------------------
 SDESC = {"S1": "data theft via USB",
          "S2": "data theft via personal email, cloud and messaging",
          "S3": "disgruntled-admin sabotage"}
@@ -54,10 +57,9 @@ CHAINS = {
            "(alternate channels: T1567, T1567.003, T1048, T1029)",
            ["T1078", "T1213", "T1005", "T1074", "T1560", "T1114",
             "T1567", "T1567.002", "T1567.003", "T1048", "T1029"]),
-    "S3": ("T1078.002 → T1562.001 → T1485, with T1098 for persistence",
-           ["T1078", "T1078.002", "T1098", "T1562.001", "T1485"]),
+    "S3": ("T1078.002 → T1685 → T1485, with T1098 for persistence",
+           ["T1078", "T1078.002", "T1098", "T1685", "T1485"]),
 }
-# --------------------------------------------------------------------------
 
 NAME = {t[0]: t[1] for t in TECHS}
 COLS = {t[0]: t[4] for t in TECHS}
