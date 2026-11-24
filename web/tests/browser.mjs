@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 import assert from "node:assert/strict";
-import { mkdir, readFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
 const errors = [];
@@ -85,13 +85,7 @@ try {
     0,
   );
   await page.getByRole("button", { name: "↺ Reset", exact: true }).click();
-  const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Export ↗" }).click();
-  const download = await downloadPromise;
-  const data = JSON.parse(await readFile(await download.path(), "utf8"));
-  assert.equal(data.schemaVersion, 2);
-  assert.ok(data.baselineHash);
-  assert.ok(Math.abs(data.results.B.total - 86967487.4074) < 1);
+  assert.equal(await page.getByRole("button", { name: /Export/ }).count(), 0);
   await mkdir("test-results", { recursive: true });
   await page.screenshot({ path: "test-results/desktop.png", fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
@@ -122,7 +116,7 @@ try {
   }
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: desktop/mobile, baseline, presets, reset, keyboard slider, advanced validation/apply, export, no horizontal overflow, no browser errors.",
+    "PASS: desktop/mobile, baseline, presets, reset, keyboard slider, advanced validation/apply, no horizontal overflow, no browser errors.",
   );
 } finally {
   await browser.close();

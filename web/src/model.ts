@@ -200,14 +200,3 @@ export function validate(input: Inputs): string[] {
       );
   return errors;
 }
-export function exportState(input: Inputs, state: unknown) {
-  return {
-    schemaVersion: 2,
-    baselineHash: baseline.sourceHash,
-    turnoverSourceHash: baseline.turnoverSourceHash,
-    createdAt: new Date().toISOString(),
-    inputs: input,
-    results: evaluate(input),
-    controls: state,
-  };
-}

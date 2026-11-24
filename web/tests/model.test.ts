@@ -12,7 +12,6 @@ import {
   validate,
   withUplift,
   successScale,
-  exportState,
 } from "../src/model";
 const close = (a: number, b: number) =>
   assert.ok(Math.abs(a - b) < 1, `${a} != ${b}`);
@@ -65,14 +64,11 @@ test("validation catches missing, unordered, negative, and out-of-bounds probabi
   }
   assert.deepEqual(validate(baseline), []);
 });
-test("presets are independent and export preserves model provenance and results", () => {
+test("presets are independent", () => {
   const a = preset("people");
   a.model.B.program = [0, 0, 0];
   const b = preset("people");
   assert.deepEqual(b.model.B.program, baseline.model.B.program);
-  const e = exportState(b, {});
-  assert.equal(e.baselineHash, baseline.sourceHash);
-  assert.deepEqual(e.results, evaluate(b));
 });
 test("unit-cost edits recalculate replacement costs while preserving every departure count", () => {
   const input = clone(baseline);
@@ -101,15 +97,13 @@ test("zero replacement costs preserve departures and recover correctly when cost
   changed.turnover.replacementRate = 0.8;
   close(evaluate(changed).B.components.people, 16_400_000);
 });
-test("departure inputs validate independently of unit costs and export as authoritative counts", () => {
+test("departure inputs validate independently of unit costs and remain authoritative", () => {
   for (const n of [NaN, -1, Infinity]) {
     const input = withDepartures(baseline, "B", n);
     assert.ok(validate(input).some((e) => e.includes("B departures")));
   }
   const input = withDepartures(baseline, "B", 123);
-  const output = exportState(input, {});
-  assert.equal(output.schemaVersion, 2);
-  assert.equal(output.inputs.model.B.departures, 123);
-  assert.equal("people" in output.inputs.model.B, false);
-  close(output.results.B.components.people, 123 * 0.8 * 20500);
+  assert.equal(input.model.B.departures, 123);
+  assert.equal("people" in input.model.B, false);
+  close(evaluate(input).B.components.people, 123 * 0.8 * 20500);
 });

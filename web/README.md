@@ -28,7 +28,6 @@ The production build is written to `dist/`. Its relative asset paths support ser
 3. Try **Stronger email/cloud protection in B**. Each preset starts from baseline; B falls to **$58.91M**.
 4. Reset, select B or C, and change protection, attempts, or additional departures independently.
 5. Expand **Advanced inputs** to edit attack, program, and enforcement triples, plus departure counts and replacement-cost assumptions. Invalid values retain the last valid results until corrected and applied.
-6. Export the inputs, results, baseline hashes, and control state as JSON.
 
 Scenario tabs change the editing scope, not the all-scenario total. The employee cost is counted once per strategy.
 
@@ -53,7 +52,7 @@ npm test
 npm run build
 ```
 
-Commit the regenerated JSON alongside the Python changes. The generation script requires Python 3 with the standard library; it does not import NumPy or plotting libraries. The generator initializes departure counts from Python’s baseline employee costs and the original unit costs once. The browser then stores departures explicitly: changing replacement rates or unit costs automatically recalculates all regimes’ employee costs without changing departure counts. There is no manual total-cost override. Export schema version 2 records departure counts instead of employee-cost triples.
+Commit the regenerated JSON alongside the Python changes. The generation script requires Python 3 with the standard library; it does not import NumPy or plotting libraries. The generator initializes departure counts from Python’s baseline employee costs and the original unit costs once. The browser then stores departures explicitly: changing replacement rates or unit costs automatically recalculates all regimes’ employee costs without changing departure counts. There is no manual total-cost override.
 
 ## Verification
 
@@ -62,7 +61,7 @@ npm test
 npm run build
 ```
 
-Model tests cover parity with Python, sensitivity totals, turnover calculations, stable slider scaling, isolated updates, validation, and exports.
+Model tests cover parity with Python, sensitivity totals, turnover calculations, stable slider scaling, isolated updates, and validation.
 
 For browser checks, install Chromium once, start the dev server, and run:
 
@@ -71,7 +70,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-Set `APP_URL` to test a different running server. Browser checks exercise desktop/mobile interactions, presets, reset, keyboard control, advanced validation and Apply, JSON export, and horizontal overflow. Screenshots are saved under ignored `test-results/`.
+Set `APP_URL` to test a different running server. Browser checks exercise desktop/mobile interactions, presets, reset, keyboard control, advanced validation and Apply, and horizontal overflow. Screenshots are saved under ignored `test-results/`.
 
 Before presenting, have a person unfamiliar with the model try it for three minutes and explain which assumption changed the ranking. This audience comprehension check requires human review.
 
@@ -79,7 +78,7 @@ Before presenting, have a person unfamiliar with the model try it for three minu
 
 | File | Purpose |
 |---|---|
-| `src/model.ts` | Input types, calculations, validation, scenarios, and exports |
+| `src/model.ts` | Input types, calculations, validation, and scenarios |
 | `src/main.tsx` | Controls, result cards, accessible SVG chart, and advanced editor |
 | `src/styles.css` | Palette, layout, responsive and focus states |
 | `src/baseline.json` | Generated, versioned Python baseline |

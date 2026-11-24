@@ -23,7 +23,6 @@ import {
   upliftReason,
   preset,
   validate,
-  exportState,
   type Inputs,
   type Regime,
   type Scenario,
@@ -440,31 +439,6 @@ function App() {
     scopes.forEach((v) => (multipliers[`${r}-${v}-attempts`] = k * 100));
     commit(withUplift(input, anchor, r, scopes, k), { multipliers });
   }
-  function download() {
-    const url = URL.createObjectURL(
-      new Blob(
-        [
-          JSON.stringify(
-            exportState(input, {
-              regime: r,
-              tab,
-              focus,
-              anchor,
-              multipliers: state.multipliers,
-            }),
-            null,
-            2,
-          ),
-        ],
-        { type: "application/json" },
-      ),
-    );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `monitoring-experiment-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
   const announce = () =>
     setLive(
       `Lowest modeled cost: ${tied.join(" and ")}, ${money(result[sorted[0]].total)}.`,
@@ -484,7 +458,6 @@ function App() {
         </a>
         <div className="header-meta">
           <span className="pill">ATT&CK × FAIR</span>
-          <span className="header-class">A classroom experiment</span>
         </div>
       </header>
       <main id="main" onPointerUp={announce} onKeyUp={announce}>
@@ -546,7 +519,6 @@ function App() {
                 Undo reset / preset
               </button>
             )}
-            <button onClick={download}>Export ↗</button>
           </div>
         </div>
         <div className="workspace">
@@ -1182,9 +1154,6 @@ function App() {
           }}
         />
         <footer>
-          <span>
-            Classroom scenario model. Results reflect your assumptions.
-          </span>
           <span>BNY context · ATT&CK scenarios · FAIR-informed costs</span>
         </footer>
         <div className="sr-only" role="status" aria-live="polite">
